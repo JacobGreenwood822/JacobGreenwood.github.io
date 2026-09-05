@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Greenwood — Book Cover Design &amp; Typesetting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;1,9..144,450&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EEE7D8;
+    --paper-2: #E4DBC7;
+    --ink: #201C16;
+    --ink-soft: #514A3D;
+    --cloth: #8C3327;
+    --cloth-dark: #6E2620;
+    --teal: #2E5851;
+    --rule: rgba(32,28,22,0.18);
+    --serif-display: 'Fraunces', serif;
+    --serif-body: 'Source Serif 4', serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif-body);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{ background:var(--cloth); color:var(--paper); }
+
+  a{color:inherit;}
+
+  /* ---------- texture ---------- */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:5;
+    opacity:0.05; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' fill='none'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- running head ---------- */
+  .running-head{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 6vw;
+    background:var(--paper);
+    border-bottom:1px solid var(--rule);
+    font-family:var(--serif-body);
+    font-size:13px;
+    letter-spacing:0.04em;
+    color:var(--ink-soft);
+  }
+  .running-head .mark{
+    font-family:var(--serif-display);
+    font-weight:600;
+    font-size:16px;
+    color:var(--ink);
+    letter-spacing:0.01em;
+  }
+  .running-head nav{ display:flex; gap:28px; }
+  .running-head nav a{ text-decoration:none; border-bottom:1px solid transparent; transition:border-color .2s; }
+  .running-head nav a:hover{ border-color:var(--cloth); }
+
+  /* ---------- title page / hero ---------- */
+  .titlepage{
+    max-width:900px;
+    margin:0 auto;
+    padding:14vh 6vw 10vh;
+    text-align:center;
+  }
+  .titlepage .eyebrow{
+    font-family:var(--serif-body);
+    font-style:italic;
+    font-size:16px;
+    color:var(--ink-soft);
+    margin-bottom:22px;
+  }
+  .titlepage h1{
+    font-family:var(--serif-display);
+    font-weight:450;
+    font-variation-settings:'opsz' 30, 'wght' 450, 'SOFT' 0, 'WONK' 0;
+    font-size:clamp(48px,8vw,96px);
+    line-height:0.98;
+    margin:0 0 30px;
+  }
+  .titlepage h1 .plain-j{
+    font-family:var(--serif-body);
+    font-weight:600;
+  }
+  .titlepage .rule{
+    width:64px; height:2px; background:var(--cloth);
+    margin:0 auto 30px;
+  }
+  .titlepage p.lede{
+    font-size:19px;
+    line-height:1.65;
+    color:var(--ink-soft);
+    max-width:620px;
+    margin:0 auto 8px;
+  }
+  .titlepage .colophon{
+    margin-top:56px;
+    font-size:13px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  /* ---------- contents / filter ---------- */
+  .contents{
+    max-width:1100px;
+    margin:0 auto;
+    padding:0 6vw 40px;
+  }
+  .contents-label{
+    font-family:var(--serif-body);
+    font-style:italic;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:16px;
+  }
+  .filters{
+    display:flex; flex-wrap:wrap; gap:10px 22px;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    padding:16px 0;
+  }
+  .filters button{
+    font-family:var(--serif-body);
+    font-size:15px;
+    background:none; border:none; cursor:pointer;
+    color:var(--ink-soft);
+    padding:2px 0;
+    border-bottom:1px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  .filters button:hover{ color:var(--ink); }
+  .filters button.active{
+    color:var(--cloth);
+    border-bottom-color:var(--cloth);
+  }
+
+  /* ---------- shelf / gallery ---------- */
+  .shelf{
+    max-width:1100px;
+    margin:0 auto;
+    padding:20px 6vw 60px;
+  }
+  .entry{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:48px;
+    align-items:center;
+    padding:56px 0;
+    border-bottom:1px solid var(--rule);
+    transition:opacity .3s ease;
+  }
+  .entry:last-child{ border-bottom:none; }
+  .entry.odd{ grid-template-columns:1fr 220px; }
+  .entry.odd .cover-wrap{ order:2; }
+  .entry.odd .entry-text{ order:1; text-align:right; }
+  .entry.odd .entry-text .folio{ justify-content:flex-end; }
+  .entry.hidden{ display:none; }
+
+  .cover-wrap{
+    position:relative;
+    width:220px;
+    justify-self:center;
+    perspective:1000px;
+  }
+  .cover-wrap img{
+    display:block;
+    width:100%;
+    height:auto;
+    box-shadow:6px 10px 0 rgba(32,28,22,0.12), 0 2px 20px rgba(32,28,22,0.18);
+    transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s;
+    cursor:pointer;
+  }
+  .cover-wrap:hover img{
+    transform:translate(-4px,-6px) rotate(-1deg);
+    box-shadow:10px 16px 0 rgba(32,28,22,0.14), 0 8px 30px rgba(32,28,22,0.22);
+  }
+
+  .entry-text{ max-width:480px; }
+  .entry .folio{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--serif-body);
+    font-size:13px;
+    color:var(--cloth);
+    font-style:italic;
+    margin-bottom:10px;
+  }
+  .entry h3{
+    font-family:var(--serif-display);
+    font-weight:450;
+    font-size:clamp(28px,3.6vw,38px);
+    margin:0 0 12px;
+    line-height:1.05;
+  }
+  .entry .byline{
+    font-size:14px;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin-bottom:16px;
+  }
+  .entry p.note{
+    font-size:16px;
+    font-style:italic;
+    line-height:1.5;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .entry .tag{
+    display:inline-block;
+    margin-top:18px;
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--teal);
+    border:1px solid var(--teal);
+    padding:4px 12px;
+    border-radius:1px;
+  }
+
+  /* ---------- closing ---------- */
+  .colophon-page{
+    max-width:700px;
+    margin:0 auto;
+    padding:8vh 6vw 6vh;
+    text-align:center;
+    border-top:1px solid var(--rule);
+  }
+  .colophon-page p{
+    font-size:18px;
+    line-height:1.65;
+    color:var(--ink-soft);
+    margin:0 0 30px;
+  }
+  .colophon-page a.cta{
+    display:inline-block;
+    font-family:var(--serif-display);
+    font-size:20px;
+    color:var(--paper);
+    background:var(--ink);
+    padding:16px 40px;
+    text-decoration:none;
+    letter-spacing:0.01em;
+    transition:background .2s;
+  }
+  .colophon-page a.cta:hover{ background:var(--cloth); }
+  .colophon-page .imprint{
+    margin-top:56px;
+    font-size:13px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  /* ---------- lightbox ---------- */
+  .lightbox{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(20,17,13,0.92);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease;
+    padding:5vh 5vw;
+  }
+  .lightbox.open{ opacity:1; pointer-events:auto; }
+  .lightbox img{
+    max-height:88vh; max-width:min(500px,88vw);
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  .lightbox .close{
+    position:absolute; top:28px; right:5vw;
+    color:var(--paper);
+    font-family:var(--serif-body);
+    font-size:15px;
+    background:none; border:1px solid var(--paper); cursor:pointer;
+    padding:8px 18px;
+    letter-spacing:0.04em;
+  }
+  .lightbox .close:hover{ background:var(--paper); color:var(--ink); }
+  .lightbox figcaption{
+    position:absolute; bottom:5vh; left:0; right:0;
+    text-align:center;
+    color:var(--paper);
+    font-family:var(--serif-body);
+    font-style:italic;
+    font-size:15px;
+  }
+
+  @media (max-width:720px){
+    .entry, .entry.odd{
+      grid-template-columns:1fr;
+      gap:24px;
+      text-align:center;
+      padding:36px 0;
+    }
+    .entry.odd .cover-wrap, .entry.odd .entry-text{ order:initial; }
+    .entry.odd .entry-text{ text-align:center; }
+    .entry.odd .entry-text .folio{ justify-content:center; }
+    .running-head nav{ display:none; }
+    .cover-wrap{ width:170px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .cover-wrap:hover img{ transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="running-head">
+  <span class="mark">J. Greenwood</span>
+  <nav>
+    <a href="#shelf">The Shelf</a>
+    <a href="#colophon">Get in touch</a>
+  </nav>
+</header>
+
+<section class="titlepage">
+  <div class="eyebrow">Book Cover Design &amp; Typesetting</div>
+  <h1>Jacob<br>Greenwood</h1>
+  <div class="rule"></div>
+  <p class="lede">I design book covers and typeset interiors for independent authors and small presses. Two years in the publishing world, and always glad to meet a new manuscript.</p>
+  <div class="colophon">Scroll down for the shelf ↓</div>
+</section>
+
+<div class="contents" id="shelf">
+  <div class="contents-label">The projects on this shelf are the highlights — filter by kind, or just keep scrolling.</div>
+  <div class="filters">
+    <button class="active" data-filter="all">All work</button>
+    <button data-filter="fiction">Fiction</button>
+    <button data-filter="scifi">Sci-fi &amp; horror</button>
+    <button data-filter="nonfiction">Memoir &amp; nonfiction</button>
+  </div>
+</div>
+
+<main class="shelf">
+
+  <article class="entry" data-cat="fiction">
+    <div class="cover-wrap">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/6xaJSlACEQAAAAEAABZ/anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFllqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjQ0YzEy" alt="cover">
+    </div>
+    <div class="entry-text">
+      <div class="folio">I</div>
+      <h3>Lord of Tides</h3>
+      <div class="byline">K. D. Stark</div>
+      <p class="note">Lord of Tides — mythological retelling</p>
+    </div>
+  </article>
+
+  <article class="entry odd" data-cat="fiction">
+    <div class="cover-wrap">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/6xaJSlACEQAAAAEAABZ/anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFllqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjViYjUw" alt="cover">
+    </div>
+    <div class="entry-text">
+      <div class="folio">II</div>
+      <h3>The Narrator's Tale</h3>
+      <div class="byline">Damir Janigro</div>
+      <p class="note">The Narrator's Tale — literary fiction</p>
+    </div>
+  </article>
+
+  <article class="entry" data-cat="scifi">
+    <div class="cover-wrap">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/6xaJSlACEQAAAAEAABZ/anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFllqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjE5ZmM0" alt="cover">
+    </div>
+    <div class="entry-text">
+      <div class="folio">III</div>
+      <h3>The Piercing of the Veil</h3>
+      <div class="byline">James E. K. Julien</div>
+      <p class="note">The Piercing of the Veil — sci-fi novella</p>
+    </div>
+  </article>
+
+  <article class="entry odd" data-cat="nonfiction">
+    <div class="cover-wrap">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/6xaJSlACEQAAAAEAABZ/anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFllqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjM1Yjk5" alt="cover">
+    </div>
+    <div class="entry-text">
+      <div class="folio">IV</div>
+      <h3>Lamps Without Shades</h3>
+      <div class="byline">David E Moreno</div>
+      <p class="note">Lamps Without Shades — memoir</p>
+    </div>
+  </article>
+
+  <article class="entry" data-cat="nonfiction">
+    <div class="cover-wrap">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/6xaJSlACEQAAAAEAABZ/anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFllqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOmNjNjJh" alt="cover">
+    </div>
+    <div class="entry-text">
+      <div class="folio">V</div>
+      <h3>Small Prints</h3>
+      <div class="byline">A. Author</div>
+      <p class="note">Small Prints — design experiments</p>
+    </div>
+  </article>
+
+</main>
+
+<footer class="colophon-page" id="colophon">
+  <p>Contact: <a href="mailto:hello@jacobgreenwood.design">hello@jacobgreenwood.design</a></p>
+  <a class="cta" href="mailto:hello@jacobgreenwood.design">Get in touch</a>
+  <div class="imprint">© Jacob Greenwood</div>
+</footer>
+
+<script>
+  // simple filter + lightbox script
+  document.querySelectorAll('.filters button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      document.querySelectorAll('.shelf .entry').forEach(entry => {
+        entry.classList.toggle('hidden', f !== 'all' && entry.dataset.cat !== f);
+      });
+    });
+  });
+
+  document.querySelectorAll('.cover-wrap img').forEach(img => {
+    img.addEventListener('click', () => {
+      let lb = document.querySelector('.lightbox');
+      if (!lb) {
+        lb = document.createElement('div'); lb.className='lightbox';
+        const figure = document.createElement('figure');
+        const large = document.createElement('img'); large.src = img.src; figure.appendChild(large);
+        const close = document.createElement('button'); close.className='close'; close.textContent='Close';
+        close.addEventListener('click', ()=> lb.classList.remove('open'));
+        lb.appendChild(figure); lb.appendChild(close);
+        document.body.appendChild(lb);
+      }
+      lb.classList.add('open');
+    });
+  });
+</script>
+
+</body>
+</html>
